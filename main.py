@@ -3,10 +3,12 @@ from gol import *
 import time
 
 root = Tk()
+root.title("Conway's Game of Life")
 frame = Frame(root, width=720, height=720)
 frame.pack()
 canvas = Canvas(frame, width=720, height=720)
 canvas.pack()
+
 
 def create_grid():
     """This function creates the board on which the game will take place"""
@@ -23,9 +25,11 @@ def create_grid():
         x = 10
         y += 10
 
+
 def find_rect_coordinates(x, y):
     """Find the co-ordinates of the rectangle which has been clicked"""
     return (x- x%10, y - y%10)
+
 
 def change_colour_on_click(event):
     """ Change the colour of the clicked grid and change the status of cell in the grid """
