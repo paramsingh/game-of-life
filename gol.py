@@ -1,7 +1,9 @@
 class Cell:
-    def __init__(self, x, y):
+    def __init__(self, x, y, i, j):
         self.isAlive = False
-        self.pos = (x, y)
+        self.nextStatus = None
+        self.pos_screen = (x, y)
+        self.pos_matrix = (i, j)
 
     def __str__(self):
         return str(self.isAlive)
@@ -9,18 +11,5 @@ class Cell:
     def __repr__(self):
         return str(self.isAlive)
 
-    def changeStatus(self):
+    def switchStatus(self):
         self.isAlive = not self.isAlive
-
-    def findNextStatus(self):
-        pass
-
-
-class Board:
-    def __init__(self, x):
-        self.values = []
-        self.limit = x
-        for i in range(self.limit):
-            self.values.append([])
-            for j in range(self.limit):
-                self.values[i].append(Cell(i, j))

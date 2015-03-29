@@ -1,5 +1,6 @@
 from Tkinter import *
 from gol import *
+import time
 
 root = Tk()
 frame = Frame(root, width=520, height=520)
@@ -16,8 +17,8 @@ def create_grid():
     for i in range(50):
         grid.append([])
         for j in range(50):
-            canvas.create_rectangle(x, y, x+10, y+10)
-            grid[i].append(Cell(x, y))
+            canvas.create_rectangle(x, y, x+10, y+10, fill="white")
+            grid[i].append(Cell(x, y, i, j))
             x += 10
         x = 10
         y += 10
@@ -31,40 +32,70 @@ def change_colour_on_click(event):
     print event.x, event.y
     x, y = find_rect_coordinates(event.x, event.y)
     try:
-        ix = x / 10
-        iy = y / 10
-        if ix == 0 or iy == 0:
+        iy = x / 10 - 1
+        ix = y / 10 - 1
+        if ix == -1 or iy == -1:
             raise IndexError
-        grid[ix][iy].changeStatus()
+        if grid[ix][iy].isAlive:
+            canvas.create_rectangle(x, y, x+10, y+10, fill="white")
+        else:
+            canvas.create_rectangle(x, y, x+10, y+10, fill="green")
+        grid[ix][iy].switchStatus()
+        print grid[ix][iy].pos_matrix, grid[ix][iy].pos_screen
     except IndexError:
         return
-    canvas.create_rectangle(x, y, x+10, y+10, fill="green")
-    print grid[x/10][y/10]
 
 
 def paint_grid():
-    for x, i in enumerate(grid):
-        for y, j in enumerate(i):
-            if j.isAlive:
-                canvas.create_rectangle(x, y, x+10, y+10, fill="green")
+    for i in grid:
+        for j in i:
+            if j.nextStatus != j.isAlive:
+                x, y = j.pos_screen
+                print x, y
+                if j.nextStatus:
+                    canvas.create_rectangle(x, y, x+10, y+10, fill="green")
+                    print "changed", j.pos_matrix, "from dead to alive"
+                else:
+                    canvas.create_rectangle(x, y, x+10, y+10, fill="white")
+                    print "changed", j.pos_matrix, "from alive to dead"
+                j.switchStatus()
+                print "Current status of", j.pos_matrix, j.isAlive
 
 
-def diffStatus(cell):
-    pass
+def changeInStatus(cell):
+    ''' If the cell's status changes in the next gen, return True else False '''
+    num_alive = 0
+    x, y = cell.pos_matrix
+    for i in (x-1, x, x+1):
+        for j in (y-1, y, y+1):
+            if i == x and j == y:
+                continue
+            if i == -1 or j == -1:
+                continue
+            try:
+                if grid[i][j].isAlive:
+                    num_alive += 1
+            except IndexError:
+                pass
+    if cell.isAlive:
+        return not( num_alive == 2 or num_alive == 3 )
+    else:
+        return num_alive == 3
 
 
 def begin_game():
-    while True:
-        for i in grid:
-            for j in i:
-                if diffStatus(j):
-                    self.nextStatus = not self.isAlive
-                else:
-                    self.nextStatus = self.isAlive
-        paint_grid()
-
-
+    for i in grid:
+        for j in i:
+            if changeInStatus(j):
+                j.nextStatus = not j.isAlive
+                print "change in", j.pos_matrix, "from", j.isAlive, "to", j.nextStatus
+            else:
+                j.nextStatus = j.isAlive
+    paint_grid()
+    root.after(700, begin_game)
 create_grid()
+
+
 start = Button(root, text="Start!", command=begin_game)
 start.pack()
 canvas.bind("<Button-1>", change_colour_on_click)
