@@ -1,6 +1,5 @@
 from Tkinter import *
 from gol import *
-import time
 
 root = Tk()
 root.title("Conway's Game of Life")
