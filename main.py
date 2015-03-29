@@ -99,11 +99,17 @@ def begin_game():
             else:
                 j.nextStatus = j.isAlive
     paint_grid()
-    root.after(700, begin_game)
+    global begin_id
+    begin_id = root.after(200, begin_game)
 
+
+def stop_game():
+    root.after_cancel(begin_id)
 
 create_grid()
 start = Button(root, text="Start!", command=begin_game)
-start.pack()
+start.pack(side = LEFT)
+stop = Button(root, text="Stop!", command = stop_game)
+stop.pack(side = RIGHT)
 canvas.bind("<Button-1>", change_colour_on_click)
 root.mainloop()
