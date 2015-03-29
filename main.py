@@ -15,11 +15,15 @@ def create_grid():
     x = 10
     y = 10
     global grid # Variable to store the Cell objects
+    global rectangles # Variable to store rectangles
+    rectangles = []
     grid = []
     for i in range(70):
         grid.append([])
+        rectangles.append([])
         for j in range(70):
-            canvas.create_rectangle(x, y, x+10, y+10, fill="white")
+            rect = canvas.create_rectangle(x, y, x+10, y+10, fill="white")
+            rectangles[i].append(rect)
             grid[i].append(Cell(x, y, i, j))
             x += 10
         x = 10
@@ -41,9 +45,9 @@ def change_colour_on_click(event):
         if ix == -1 or iy == -1:
             raise IndexError
         if grid[ix][iy].isAlive:
-            canvas.create_rectangle(x, y, x+10, y+10, fill="white")
+            canvas.itemconfig(rectangles[ix][iy], fill="white")
         else:
-            canvas.create_rectangle(x, y, x+10, y+10, fill="green")
+            canvas.itemconfig(rectangles[ix][iy], fill="green")
         grid[ix][iy].switchStatus()
         print grid[ix][iy].pos_matrix, grid[ix][iy].pos_screen
     except IndexError:
@@ -54,13 +58,13 @@ def paint_grid():
     for i in grid:
         for j in i:
             if j.nextStatus != j.isAlive:
-                x, y = j.pos_screen
+                x, y = j.pos_matrix
                 print x, y
                 if j.nextStatus:
-                    canvas.create_rectangle(x, y, x+10, y+10, fill="green")
+                    canvas.itemconfig(rectangles[x][y], fill="green")
                     print "changed", j.pos_matrix, "from dead to alive"
                 else:
-                    canvas.create_rectangle(x, y, x+10, y+10, fill="white")
+                    canvas.itemconfig(rectangles[x][y], fill="white")
                     print "changed", j.pos_matrix, "from alive to dead"
                 j.switchStatus()
                 print "Current status of", j.pos_matrix, j.isAlive
