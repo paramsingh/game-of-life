@@ -3,9 +3,9 @@ from gol import *
 import time
 
 root = Tk()
-frame = Frame(root, width=520, height=520)
+frame = Frame(root, width=720, height=720)
 frame.pack()
-canvas = Canvas(frame, width=520, height=520)
+canvas = Canvas(frame, width=720, height=720)
 canvas.pack()
 
 def create_grid():
@@ -14,9 +14,9 @@ def create_grid():
     y = 10
     global grid # Variable to store the Cell objects
     grid = []
-    for i in range(50):
+    for i in range(70):
         grid.append([])
-        for j in range(50):
+        for j in range(70):
             canvas.create_rectangle(x, y, x+10, y+10, fill="white")
             grid[i].append(Cell(x, y, i, j))
             x += 10
@@ -93,9 +93,9 @@ def begin_game():
                 j.nextStatus = j.isAlive
     paint_grid()
     root.after(700, begin_game)
+
+
 create_grid()
-
-
 start = Button(root, text="Start!", command=begin_game)
 start.pack()
 canvas.bind("<Button-1>", change_colour_on_click)
